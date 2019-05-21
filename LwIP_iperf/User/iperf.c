@@ -205,22 +205,22 @@ void iperf_server(void *thread_param)
 
             recvlen += bytes_received;
 
-            tick2 = xTaskGetTickCount();
-            if (tick2 - tick1 >= configTICK_RATE_HZ * 5)
-            {
-                float f;
+//            tick2 = xTaskGetTickCount();
+//            if (tick2 - tick1 >= configTICK_RATE_HZ * 5)
+//            {
+//                float f;
 
-                f = (float)(recvlen * configTICK_RATE_HZ / 125 / (tick2 - tick1));
-                f /= 1000.0f;
-                
-//              taskENTER_CRITICAL();
-              snprintf(speed, sizeof(speed), "%.4f Mbps!\n", f);
-              printf("%s", speed);
-//              taskEXIT_CRITICAL();   
-              
-                tick1 = tick2;
-                recvlen = 0;
-            }
+//                f = (float)(recvlen * configTICK_RATE_HZ / 125 / (tick2 - tick1));
+//                f /= 1000.0f;
+//                
+////              taskENTER_CRITICAL();
+//              snprintf(speed, sizeof(speed), "%.4f Mbps!\n", f);
+//              printf("%s", speed);
+////              taskEXIT_CRITICAL();   
+//              
+//                tick1 = tick2;
+//                recvlen = 0;
+//            }
         }
 
         if (connected >= 0) closesocket(connected);

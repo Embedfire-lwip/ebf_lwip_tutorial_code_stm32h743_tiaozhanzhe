@@ -18,6 +18,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32h7xx.h"
+#include "stm32h7xx_hal.h"
 #include "./usart/bsp_debug_usart.h"
 #include "./led/bsp_led.h"  
 
