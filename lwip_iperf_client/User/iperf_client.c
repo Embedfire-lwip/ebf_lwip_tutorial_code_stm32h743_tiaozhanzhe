@@ -74,7 +74,7 @@ static void iperf_client(void *thread_param)
     
     IP4_ADDR(&ipaddr,192,168,0,181);
     
-    ret = netconn_connect(conn,&ipaddr,5001);
+    ret = netconn_connect(conn,&ipaddr,5002);
     if (ret == -1)
     {
         printf("Connect failed!\n");

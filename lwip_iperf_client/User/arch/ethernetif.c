@@ -303,6 +303,9 @@ static struct pbuf * low_level_input(struct netif *netif)
     custom_pbuf  = (struct pbuf_custom*)LWIP_MEMPOOL_ALLOC(RX_POOL);
     custom_pbuf->custom_free_function = pbuf_free_custom;
     
+    /* Build Rx descriptor to be ready for next data reception */
+    HAL_ETH_BuildRxDescriptors(&EthHandle);
+    
     p = pbuf_alloced_custom(PBUF_RAW, framelength, PBUF_REF, custom_pbuf, RxBuff.buffer, ETH_RX_BUFFER_SIZE);
 
   }
@@ -330,10 +333,7 @@ void ethernetif_input(void *pParams) {
       /* move received packet into a new pbuf */
       taskENTER_CRITICAL();
 TRY_GET_NEXT_FRAGMENT:
-      p = low_level_input(netif);
-      
-      /* Build Rx descriptor to be ready for next data reception */
-      HAL_ETH_BuildRxDescriptors(&EthHandle);
+      p = low_level_input(netif); 
       
       taskEXIT_CRITICAL();
       /* points to packet payload, which starts with an Ethernet header */
