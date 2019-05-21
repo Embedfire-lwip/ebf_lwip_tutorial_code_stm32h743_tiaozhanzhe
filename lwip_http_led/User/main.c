@@ -178,7 +178,7 @@ static void Test2_Task(void* parameter)
 {	 
   while (1)
   {
-//    LED2_TOGGLE;
+    LED2_TOGGLE;
 //    PRINT_DEBUG("LED2_TOGGLE\n");
     vTaskDelay(2000);/* ÑÓÊ±2000¸ötick */
   }
