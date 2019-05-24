@@ -46,7 +46,7 @@
 #include <lwip/stats.h>
 #include <lwip/debug.h>
 #include <lwip/sys.h>
-
+#include "lwip/dhcp.h"
 #include <string.h>
 
 int errno;
@@ -57,9 +57,6 @@ u32_t lwip_sys_now;
 struct sys_timeouts {
   struct sys_timeo *next;
 };
-
-
-
 
 struct timeoutlist
 {
@@ -445,12 +442,11 @@ uint8_t GATEWAY_ADDRESS[4];
 
 void TCPIP_Init(void)
 {
-  
   tcpip_init(NULL, NULL);
   
   /* IP addresses initialization */
   /* USER CODE BEGIN 0 */
-#ifdef USE_DHCP
+#if LWIP_DHCP
   ip_addr_set_zero_ip4(&ipaddr);
   ip_addr_set_zero_ip4(&netmask);
   ip_addr_set_zero_ip4(&gw);
@@ -469,20 +465,37 @@ void TCPIP_Init(void)
 
   if (netif_is_link_up(&gnetif))
   {
-    PRINT_DEBUG("netif_set_up\n");
     /* When the netif is fully configured this function must be called */
     netif_set_up(&gnetif);
   }
   else
   {
-    PRINT_DEBUG("netif_set_down\n");
     /* When the netif link is down this function must be called */
     netif_set_down(&gnetif);
   }
+  
+#if LWIP_DHCP	   			//若使用了DHCP
+  int err;
+  /*  Creates a new DHCP client for this interface on the first call.
+  Note: you must call dhcp_fine_tmr() and dhcp_coarse_tmr() at
+  the predefined regular intervals after starting the client.
+  You can peek in the netif->dhcp struct for the actual DHCP status.*/
+  err = dhcp_start(&gnetif);      //开启dhcp
+  if(err == ERR_OK)
+    printf("lwip dhcp init success...\n\n");
+  else
+    printf("lwip dhcp init fail...\n\n");
+  while(ip_addr_cmp(&(gnetif.ip_addr),&ipaddr))   //等待dhcp分配的ip有效
+  {
+    vTaskDelay(1);
+  } 
+#endif
+  printf("本地IP地址是:%d.%d.%d.%d\n\n",  \
+        ((gnetif.ip_addr.addr)&0x000000ff),       \
+        (((gnetif.ip_addr.addr)&0x0000ff00)>>8),  \
+        (((gnetif.ip_addr.addr)&0x00ff0000)>>16), \
+        ((gnetif.ip_addr.addr)&0xff000000)>>24);
 
-/* USER CODE BEGIN 3 */
-
-/* USER CODE END 3 */
 }
 
 

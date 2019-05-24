@@ -12,11 +12,11 @@
 */
 
 #ifndef PRINT_DEBUG_ENABLE
-#define PRINT_DEBUG_ENABLE		0		/* 打印调试信息 */
+#define PRINT_DEBUG_ENABLE		1		/* 打印调试信息 */
 #endif
 
 #ifndef PRINT_ERR_ENABLE
-#define PRINT_ERR_ENABLE			0 	/* 打印错误信息 */
+#define PRINT_ERR_ENABLE			1 	/* 打印错误信息 */
 #endif
 
 #ifndef PRINT_INFO_ENABLE

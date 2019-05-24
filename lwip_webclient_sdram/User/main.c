@@ -133,6 +133,16 @@ static void AppTaskCreate(void)
 //  Netif_Config();
   TCPIP_Init();
   
+  printf("本例程演示开发板获取网页数据\n\n");
+  
+  printf("网络连接模型如下：\n\t 电脑<--网线-->路由<--网线-->开发板\n\n");
+  
+  printf("实验中使用TCP协议传输数据，开发板作为TCP Server\n\n");
+  
+  printf("本例程的IP地址均在User/arch/sys_arch.h文件中修改\n\n");
+    
+  printf("本例程参考<<LwIP应用实战开发指南>>第19章 HTTP 协议\n\n");
+  
   client_init();
   
   taskENTER_CRITICAL();           //进入临界区

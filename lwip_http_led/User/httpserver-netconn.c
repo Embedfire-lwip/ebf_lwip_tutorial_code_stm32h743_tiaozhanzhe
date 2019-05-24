@@ -127,7 +127,7 @@ httpserver_thread(void *arg)
   LED1_ON;
   
   /* Bind to port 80 (HTTP) with default IP address */
-  netconn_bind(conn, NULL, 80);
+  netconn_bind(conn, NULL, LOCAL_PORT);
   
   /* Put the connection into LISTEN state */
   netconn_listen(conn);

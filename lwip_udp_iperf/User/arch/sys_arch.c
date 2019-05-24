@@ -442,7 +442,6 @@ uint8_t GATEWAY_ADDRESS[4];
 
 void TCPIP_Init(void)
 {
-  
   tcpip_init(NULL, NULL);
   
   /* IP addresses initialization */
@@ -481,10 +480,24 @@ void TCPIP_Init(void)
   Note: you must call dhcp_fine_tmr() and dhcp_coarse_tmr() at
   the predefined regular intervals after starting the client.
   You can peek in the netif->dhcp struct for the actual DHCP status.*/
+  
+  printf("本例程将使用DHCP动态分配IP地址,如果不需要则在lwipopts.h中将LWIP_DHCP定义为0\n\n");
+  
   err = dhcp_start(&gnetif);      //开启dhcp
   if(err == ERR_OK)
-    printf("lwip dhcp init success...\n");
+    printf("lwip dhcp init success...\n\n");
+  else
+    printf("lwip dhcp init fail...\n\n");
+  while(ip_addr_cmp(&(gnetif.ip_addr),&ipaddr))   //等待dhcp分配的ip有效
+  {
+    vTaskDelay(1);
+  } 
 #endif
+  printf("本地IP地址是:%d.%d.%d.%d\n\n",  \
+        ((gnetif.ip_addr.addr)&0x000000ff),       \
+        (((gnetif.ip_addr.addr)&0x0000ff00)>>8),  \
+        (((gnetif.ip_addr.addr)&0x00ff0000)>>16), \
+        ((gnetif.ip_addr.addr)&0xff000000)>>24);
 
 }
 

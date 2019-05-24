@@ -19,7 +19,6 @@
 #include "lwip/sys.h"
 #include "lwip/api.h"
 
-#define IPERF_PORT          5001
 #define IPERF_BUFSZ         (4 * 1024)
 
 #define IPERF_MODE_STOP     0
@@ -33,7 +32,7 @@ typedef struct
     char *host;
     int port;
 } IPERF_PARAM;
-static IPERF_PARAM param = {IPERF_MODE_SERVER, NULL, IPERF_PORT};
+static IPERF_PARAM param = {IPERF_MODE_SERVER, NULL, LOCAL_PORT};
 
 static void iperf_client(void *thread_param)
 {
@@ -128,11 +127,11 @@ void iperf_server(void *thread_param)
 {
     uint8_t *recv_data;
     socklen_t sin_size;
-    uint32_t tick1, tick2;
+//    uint32_t tick1, tick2;
     int sock = -1, connected, bytes_received;
     uint64_t recvlen;
     struct sockaddr_in server_addr, client_addr;
-    char speed[32] = { 0 };
+//    char speed[32] = { 0 };
     fd_set readset;
     struct timeval timeout;
 
@@ -154,7 +153,9 @@ void iperf_server(void *thread_param)
     server_addr.sin_port = htons(param.port);
     server_addr.sin_addr.s_addr = INADDR_ANY;
     memset(&(server_addr.sin_zero), 0x0, sizeof(server_addr.sin_zero));
-
+    
+    printf("本地端口号是%d\n",LOCAL_PORT);
+    
     if (bind(sock, (struct sockaddr *)&server_addr, sizeof(struct sockaddr)) == -1)
     {
         printf("Unable to bind\n");
@@ -197,7 +198,7 @@ void iperf_server(void *thread_param)
         }
 
         recvlen = 0;
-        tick1 = xTaskGetTickCount();
+//        tick1 = xTaskGetTickCount();
         while (param.mode != IPERF_MODE_STOP)
         {
             bytes_received = recv(connected, recv_data, IPERF_BUFSZ, 0);
@@ -257,7 +258,7 @@ int iperf(int argc, char **argv)
 {
     int mode = 0; /* server mode */
     char *host = NULL;
-    int port = IPERF_PORT;
+    int port = LOCAL_PORT;
 
     if (argc == 1) goto __usage;
     else

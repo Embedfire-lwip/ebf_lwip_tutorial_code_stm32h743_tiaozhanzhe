@@ -154,7 +154,9 @@ void iperf_server(void *thread_param)
     server_addr.sin_port = htons(param.port);
     server_addr.sin_addr.s_addr = INADDR_ANY;
     memset(&(server_addr.sin_zero), 0x0, sizeof(server_addr.sin_zero));
-
+    
+    printf("本地端口号是%d\n",LOCAL_PORT);
+    
     if (bind(sock, (struct sockaddr *)&server_addr, sizeof(struct sockaddr)) == -1)
     {
         printf("Unable to bind\n");

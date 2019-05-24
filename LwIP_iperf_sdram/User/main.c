@@ -133,6 +133,20 @@ static void AppTaskCreate(void)
 //  Netif_Config();
   TCPIP_Init();
   
+  printf("本例程对使用jperf软件对开发板进行测试接收速度，只不过会使用到sdram\n\n");
+  
+  printf("关于sdram的配置是在分散加载文件中(Fire_FreeRTOS.sct),参考对应的裸机例程\n\n");
+  
+  printf("网络连接模型如下：\n\t 电脑<--网线-->路由<--网线-->开发板\n\n");
+  
+  printf("实验中使用TCP协议传输数据，电脑作为TCP Client ，开发板作为TCP Server\n\n");
+  
+  printf("本例程的IP地址均在User/arch/sys_arch.h文件中修改\n\n");
+    
+  printf("本例程参考<<LwIP应用实战开发指南>>第18章 使用 JPerf 工具测试网速\n\n");
+   
+  printf("打开jperf软件，输入开发板的IP地址与端口号，然后开始测速\n\n");  
+  
   iperf_server(NULL);
   
   taskENTER_CRITICAL();           //进入临界区

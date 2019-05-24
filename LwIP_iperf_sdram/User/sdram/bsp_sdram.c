@@ -39,10 +39,10 @@ static void SDRAM_delay(__IO uint32_t nCount)
   */
 static void SDRAM_GPIO_Config(void)
 {		
-	///使能GPIO口时钟
+  //使能GPIO口时钟
   RCC->AHB4ENR |= 0x1FC; 
 
-  //配置端口C、D、E、F、G、H相应的引脚为复用推挽输出
+  //配置端口C、D、E、F、G、H、I相应的引脚为复用推挽输出
   GPIOC->MODER = 0xFFFFFFFE;
   GPIOC->OTYPER = 0;
   GPIOC->OSPEEDR = 0x00000003;
@@ -82,7 +82,15 @@ static void SDRAM_GPIO_Config(void)
   GPIOH->OSPEEDR = 0xFFFFF000;
   GPIOH->PUPDR = 0x55555000;
   GPIOH->AFR[0] = 0xCC000000;  
-  GPIOH->AFR[1] = 0xCCCCCCCC;
+  GPIOH->AFR[1] = 0xCCCCCCCC;  
+
+  GPIOI->MODER = 0xFFEBAAAA;
+  GPIOI->OTYPER = 0;
+  GPIOI->OSPEEDR = 0x003CFFFF;
+  GPIOI->PUPDR = 0x00145555;
+  GPIOI->AFR[0] = 0xCCCCCCCC;  
+  GPIOI->AFR[1] = 0x00000CC0;
+
 }
 
 /**
@@ -92,6 +100,8 @@ static void SDRAM_GPIO_Config(void)
   */
 static void SDRAM_InitSequence(void)
 {
+
+
 	/* Step 1 ----------------------------------------------------------------*/
 	/* 配置命令：开启提供给SDRAM的时钟 */
   FMC_Bank5_6->SDCMR = 0x00000009;
@@ -148,7 +158,7 @@ void SDRAM_Init(void)
   (RCC->AHB3ENR |= (RCC_AHB3ENR_FMCEN));
   
   FMC_Bank5_6->SDCR[FMC_SDRAM_BANK1] = 0x00003AD0;
-  FMC_Bank5_6->SDCR[FMC_SDRAM_BANK2] = 0x000001D9;
+  FMC_Bank5_6->SDCR[FMC_SDRAM_BANK2] = 0x000001E9;
   
   FMC_Bank5_6->SDTR[FMC_SDRAM_BANK1] = 0x0F1F7FFF;
   FMC_Bank5_6->SDTR[FMC_SDRAM_BANK2] = 0x01010471;
@@ -173,11 +183,12 @@ void SDRAM_WriteBuffer(uint32_t* pBuffer, uint32_t uwWriteAddress, uint32_t uwBu
   __IO uint32_t write_pointer = (uint32_t)uwWriteAddress;
 
   /* 禁止写保护 */
-  HAL_SDRAM_WriteProtection_Disable(&hsdram1);
+  //HAL_SDRAM_WriteProtection_Disable(&hsdram1);
+  FMC_Bank5_6->SDCR[1] &= ~FMC_SDRAM_WRITE_PROTECTION_ENABLE;
   /* 检查SDRAM标志，等待至SDRAM空闲 */ 
-  while(HAL_SDRAM_GetState(&hsdram1) != RESET)
-  {
-  }
+//  while(HAL_SDRAM_GetState(&hsdram1) != RESET)
+//  {
+//  }
 
   /* 循环写入数据 */
   for (; uwBufferSize != 0; uwBufferSize--) 
@@ -204,9 +215,9 @@ void SDRAM_ReadBuffer(uint32_t* pBuffer, uint32_t uwReadAddress, uint32_t uwBuff
   
    
   /* 检查SDRAM标志，等待至SDRAM空闲 */  
-  while ( HAL_SDRAM_GetState(&hsdram1) != RESET)
-  {
-  }
+//  while ( HAL_SDRAM_GetState(&hsdram1) != RESET)
+//  {
+//  }
   
   /*读取数据 */
   for(; uwBufferSize != 0x00; uwBufferSize--)
@@ -240,26 +251,26 @@ uint8_t SDRAM_Test(void)
 
   /*按8位格式读写数据，并校验*/
   
-  /* 把SDRAM数据全部重置为0 ，IS42S16400J_SIZE是以8位为单位的 */
-  for (counter = 0x00; counter < IS42S16400J_SIZE; counter++)
+  /* 把SDRAM数据全部重置为0 ，SDRAM_SIZE是以8位为单位的 */
+  for (counter = 0x00; counter < SDRAM_SIZE; counter++)
   {
     *(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)0x0;
   }
   
   /* 向整个SDRAM写入数据  8位 */
-  for (counter = 0; counter < IS42S16400J_SIZE; counter++)
+  for (counter = 0; counter < SDRAM_SIZE; counter++)
   {
     *(__IO uint8_t*) (SDRAM_BANK_ADDR + counter) = (uint8_t)(ubWritedata_8b + counter);
   }
   
   /* 读取 SDRAM 数据并检测*/
-  for(counter = 0; counter<IS42S16400J_SIZE;counter++ )
+  for(counter = 0; counter<SDRAM_SIZE;counter++ )
   {
     ubReaddata_8b = *(__IO uint8_t*)(SDRAM_BANK_ADDR + counter);  //从该地址读出数据
     
     if(ubReaddata_8b != (uint8_t)(ubWritedata_8b + counter))      //检测数据，若不相等，跳出函数,返回检测失败结果。
     {
-      SDRAM_ERROR("8位数据读写错误！");
+      SDRAM_ERROR("8位数据读写错误！出错位置：%d",counter);
       return 0;
     }
   }
@@ -268,25 +279,25 @@ uint8_t SDRAM_Test(void)
   /*按16位格式读写数据，并检测*/
   
   /* 把SDRAM数据全部重置为0 */
-  for (counter = 0x00; counter < IS42S16400J_SIZE/2; counter++)
+  for (counter = 0x00; counter < SDRAM_SIZE/2; counter++)
   {
     *(__IO uint16_t*) (SDRAM_BANK_ADDR + 2*counter) = (uint16_t)0x00;
   }
   
   /* 向整个SDRAM写入数据  16位 */
-  for (counter = 0; counter < IS42S16400J_SIZE/2; counter++)
+  for (counter = 0; counter < SDRAM_SIZE/2; counter++)
   {
     *(__IO uint16_t*) (SDRAM_BANK_ADDR + 2*counter) = (uint16_t)(uhWritedata_16b + counter);
   }
   
     /* 读取 SDRAM 数据并检测*/
-  for(counter = 0; counter<IS42S16400J_SIZE/2;counter++ )
+  for(counter = 0; counter<SDRAM_SIZE/2;counter++ )
   {
     uhReaddata_16b = *(__IO uint16_t*)(SDRAM_BANK_ADDR + 2*counter);  //从该地址读出数据
     
     if(uhReaddata_16b != (uint16_t)(uhWritedata_16b + counter))      //检测数据，若不相等，跳出函数,返回检测失败结果。
     {
-      SDRAM_ERROR("16位数据读写错误！");
+      SDRAM_ERROR("16位数据读写错误！出错位置：%d",counter);
 
       return 0;
     }
