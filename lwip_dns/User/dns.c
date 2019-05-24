@@ -63,10 +63,10 @@ dns_thread(void *arg)
   /* Bind connection to well known port number 5001. */
 #if LWIP_IPV6
   conn = netconn_new(NETCONN_TCP_IPV6);
-  netconn_bind(conn, IP6_ADDR_ANY, DEST_PORT);
+  netconn_bind(conn, IP6_ADDR_ANY, LOCAL_PORT);
 #else /* LWIP_IPV6 */
   conn = netconn_new(NETCONN_TCP);
-  netconn_bind(conn, IP_ADDR_ANY, DEST_PORT);
+  netconn_bind(conn, IP_ADDR_ANY, LOCAL_PORT);
 #endif /* LWIP_IPV6 */
   LWIP_ERROR("tcpecho: invalid conn", (conn != NULL), return;);
   
