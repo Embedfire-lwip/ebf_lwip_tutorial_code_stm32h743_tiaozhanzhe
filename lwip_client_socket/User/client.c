@@ -38,8 +38,6 @@
 
 #include <lwip/sockets.h>
 
-#define IP_ADDR        "192.168.0.181"
-
 static void client(void *thread_param)
 {
   int sock = -1;
