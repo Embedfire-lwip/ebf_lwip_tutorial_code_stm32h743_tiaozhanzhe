@@ -85,13 +85,13 @@ udpecho_thread(void *arg)
                              (struct sockaddr*)&seraddr,
                              &addrlen);
                              
-      /*æ˜¾ç¤ºå‘é€ç«¯çš„IPåœ°å€*/
+      /*ÏÔÊ¾·¢ËÍ¶ËµÄIPµØÖ·*/
       printf("receive from %s\n",inet_ntoa(seraddr.sin_addr));
                              
-      /*æ˜¾ç¤ºå‘é€ç«¯å‘æ¥çš„å­—ä¸²*/ 
+      /*ÏÔÊ¾·¢ËÍ¶Ë·¢À´µÄ×Ö´®*/ 
       printf("recevce:%s",recv_data);
                              
-      /*å°†å­—ä¸²è¿”å›ç»™å‘é€ç«¯*/
+      /*½«×Ö´®·µ»Ø¸ø·¢ËÍ¶Ë*/
       sendto(sock,recv_data,
              recv_data_len,0,
              (struct sockaddr*)&seraddr,
