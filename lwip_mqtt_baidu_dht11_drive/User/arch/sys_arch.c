@@ -446,7 +446,7 @@ void TCPIP_Init(void)
   
   /* IP addresses initialization */
   /* USER CODE BEGIN 0 */
-#ifdef LWIP_DHCP
+#if LWIP_DHCP
   ip_addr_set_zero_ip4(&ipaddr);
   ip_addr_set_zero_ip4(&netmask);
   ip_addr_set_zero_ip4(&gw);
