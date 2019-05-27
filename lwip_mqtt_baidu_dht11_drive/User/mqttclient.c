@@ -655,8 +655,8 @@ MQTT_SEND_START:
                              1000); /* 等待时间 3000ms */
       if(xReturn != pdTRUE)
       {
-        a = 29;//recv_data->temperature;
-        b = 32;//recv_data->humidity;
+        a = recv_data->temperature;
+        b = recv_data->humidity;
 //        printf("a = %f,b = %f\n",a,b);
         //更新数据      
         res = cJSON_Update(cJSON_Data,TEMP_NUM,&a);
