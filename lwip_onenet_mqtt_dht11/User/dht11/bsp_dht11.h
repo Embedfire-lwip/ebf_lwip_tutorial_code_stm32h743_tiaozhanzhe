@@ -19,9 +19,9 @@ typedef struct
 
 /* 宏定义 -------------------------------------------------------------------*/
 /***********************   DHT11 连接引脚定义  **************************/
-#define DHT11_Dout_GPIO_CLK_ENABLE()              __HAL_RCC_GPIOA_CLK_ENABLE()
-#define DHT11_Dout_PORT                           GPIOA
-#define DHT11_Dout_PIN                            GPIO_PIN_12
+#define DHT11_Dout_GPIO_CLK_ENABLE()              __HAL_RCC_GPIOE_CLK_ENABLE()
+#define DHT11_Dout_PORT                           GPIOE
+#define DHT11_Dout_PIN                            GPIO_PIN_2
 
 /***********************   DHT11 函数宏定义  ****************************/
 #define DHT11_Dout_LOW()                          HAL_GPIO_WritePin(DHT11_Dout_PORT,DHT11_Dout_PIN,GPIO_PIN_RESET) 
