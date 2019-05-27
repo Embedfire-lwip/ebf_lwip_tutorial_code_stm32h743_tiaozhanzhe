@@ -498,6 +498,7 @@ void TCPIP_Init(void)
         (((gnetif.ip_addr.addr)&0x0000ff00)>>8),  \
         (((gnetif.ip_addr.addr)&0x00ff0000)>>16), \
         ((gnetif.ip_addr.addr)&0xff000000)>>24);
+
 }
 
 
