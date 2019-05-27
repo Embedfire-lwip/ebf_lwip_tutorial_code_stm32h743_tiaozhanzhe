@@ -480,6 +480,9 @@ void TCPIP_Init(void)
   Note: you must call dhcp_fine_tmr() and dhcp_coarse_tmr() at
   the predefined regular intervals after starting the client.
   You can peek in the netif->dhcp struct for the actual DHCP status.*/
+  
+  printf("本例程将使用DHCP动态分配IP地址,如果不需要则在lwipopts.h中将LWIP_DHCP定义为0\n\n");
+  
   err = dhcp_start(&gnetif);      //开启dhcp
   if(err == ERR_OK)
     printf("lwip dhcp init success...\n\n");
