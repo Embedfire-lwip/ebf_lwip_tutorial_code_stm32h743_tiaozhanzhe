@@ -225,10 +225,10 @@ a lot of data that needs to be copied, this should be set high. */
 ** Socket参数设定——Socket Options
 *********************************************************************************************************/
 #define LWIP_SOCKET                     1
-#define LWIP_COMPAT_SOCKETS             1
-#define LWIP_POSIX_SOCKETS_IO_NAMES     0
+//#define LWIP_COMPAT_SOCKETS             0
+//#define LWIP_POSIX_SOCKETS_IO_NAMES     0
 #define LWIP_SOCKET_OFFSET              0
-#define LWIP_TCP_KEEPALIVE              1
+#define LWIP_TCP_KEEPALIVE              0
 #define LWIP_SO_SNDTIMEO                1
 #define LWIP_SO_RCVTIMEO                1
 //#define LWIP_SO_SNDRCVTIMEO_NONSTANDARD 0
@@ -236,7 +236,7 @@ a lot of data that needs to be copied, this should be set high. */
 #define LWIP_SO_LINGER                  1
 //#define RECV_BUFSIZE_DEFAULT            INT_MAX
 //#define LWIP_TCP_CLOSE_TIMEOUT_MS_DEFAULT 20000
-#define SO_REUSE                        1
+#define SO_REUSE                        0
 #define SO_REUSE_RXTOALL                1
 //#define LWIP_FIONREAD_LINUXMODE         0
 #define LWIP_SOCKET_SELECT              1
