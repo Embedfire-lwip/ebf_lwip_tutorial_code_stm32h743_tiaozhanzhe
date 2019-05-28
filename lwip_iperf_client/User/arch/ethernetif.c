@@ -258,12 +258,18 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
     }
     
     i++;
+    
   }
 
   TxConfig.Length = framelen;
   TxConfig.TxBuffer = Txbuffer;
-
+  
+//  SCB_CleanDCache_by_Addr((uint32_t *)&q->payload,q->len);
+  SCB_CleanDCache();
 //  SCB_CleanInvalidateDCache();
+//  SCB_InvalidateDCache_by_Addr((uint32_t *)&Txbuffer,framelen);//(TxConfig.TxBuffer)
+  
+//  SCB_InvalidateDCache();
   
   HAL_ETH_Transmit(&EthHandle, &TxConfig, ETH_DMA_TRANSMIT_TIMEOUT);
   
@@ -292,19 +298,18 @@ static struct pbuf * low_level_input(struct netif *netif)
   
   /* Clean and Invalidate data cache */
 //  SCB_CleanInvalidateDCache();
+//  SCB_CleanDCache_by_Addr((uint32_t *)&Rx_Buff,ETH_RX_DESC_CNT*ETH_RX_BUFFER_SIZE);
   
   if(HAL_ETH_GetRxDataBuffer(&EthHandle, &RxBuff) == HAL_OK) 
   {
     HAL_ETH_GetRxDataLength(&EthHandle, &framelength);
 
     /* Invalidate data cache for ETH Rx Buffers */
-    SCB_InvalidateDCache_by_Addr((uint32_t *)Rx_Buff, (ETH_RX_DESC_CNT*ETH_RX_BUFFER_SIZE));
+    //SCB_CleanDCache_by_Addr
+    SCB_InvalidateDCache_by_Addr((uint32_t *)&Rx_Buff, (ETH_RX_DESC_CNT*ETH_RX_BUFFER_SIZE));
     
     custom_pbuf  = (struct pbuf_custom*)LWIP_MEMPOOL_ALLOC(RX_POOL);
     custom_pbuf->custom_free_function = pbuf_free_custom;
-    
-    /* Build Rx descriptor to be ready for next data reception */
-    HAL_ETH_BuildRxDescriptors(&EthHandle);
     
     p = pbuf_alloced_custom(PBUF_RAW, framelength, PBUF_REF, custom_pbuf, RxBuff.buffer, ETH_RX_BUFFER_SIZE);
 
@@ -333,7 +338,10 @@ void ethernetif_input(void *pParams) {
       /* move received packet into a new pbuf */
       taskENTER_CRITICAL();
 TRY_GET_NEXT_FRAGMENT:
-      p = low_level_input(netif); 
+      p = low_level_input(netif);
+      
+      /* Build Rx descriptor to be ready for next data reception */
+      HAL_ETH_BuildRxDescriptors(&EthHandle);
       
       taskEXIT_CRITICAL();
       /* points to packet payload, which starts with an Ethernet header */

@@ -443,7 +443,7 @@ uint8_t GATEWAY_ADDRESS[4];
 void TCPIP_Init(void)
 {
   tcpip_init(NULL, NULL);
- 
+  
   /* IP addresses initialization */
   /* USER CODE BEGIN 0 */
 #if LWIP_DHCP

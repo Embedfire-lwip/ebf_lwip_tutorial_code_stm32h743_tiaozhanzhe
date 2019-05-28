@@ -99,7 +99,7 @@ a lot of data that needs to be copied, this should be set high. */
 #define TCP_MSS                 (1500 - 40)	  /* TCP_MSS = (Ethernet MTU - IP header size - TCP header size) */
 
 /* TCP sender buffer space (bytes). */
-#define TCP_SND_BUF             (18*TCP_MSS)
+#define TCP_SND_BUF             (10*TCP_MSS)
 
 /*  TCP_SND_QUEUELEN: TCP sender buffer space (pbufs). This must be at least
   as much as (2 * TCP_SND_BUF/TCP_MSS) for things to work. */
@@ -108,8 +108,6 @@ a lot of data that needs to be copied, this should be set high. */
 
 /* TCP receive window. */
 #define TCP_WND                 (11*TCP_MSS)
-
-
 
 
 /* ---------- ICMP options ---------- */
@@ -140,7 +138,7 @@ a lot of data that needs to be copied, this should be set high. */
 /* Define LWIP_DHCP to 1 if you want DHCP configuration of
    interfaces. DHCP is not implemented in lwIP 0.5.1, however, so
    turning this on does currently not work. */
-#define LWIP_DHCP               1
+#define LWIP_DHCP               0
 
 
 /* ---------- UDP options ---------- */
@@ -238,9 +236,9 @@ The STM32F4x7 allows computing and verifying the IP, UDP, TCP and ICMP checksums
 
 
 #define TCPIP_THREAD_NAME              "lwip"
-#define TCPIP_THREAD_STACKSIZE          1024
+#define TCPIP_THREAD_STACKSIZE          512
 #define TCPIP_MBOX_SIZE                 8
-#define TCPIP_THREAD_PRIO               4
+#define TCPIP_THREAD_PRIO               3
 
 //#define IPERF_SERVER_THREAD_NAME            "iperf_server"
 //#define IPERF_SERVER_THREAD_STACKSIZE        1024
